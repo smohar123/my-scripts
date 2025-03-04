@@ -1,0 +1,54 @@
+jobId: "nestle-syndicated-programs" #
+jobVersion: "v6-worst-case" # feb 2025 run with final program data
+jobYear: 2024
+jobName: "Nestle Syndicated Programs V6 worst case (feb 2025)"
+externalId: "nestle-syndicated-programs-v6-worst-case"
+simulation:
+  startYear: 1985
+  firstReportYear: 2018
+  endYear: 2024
+  salusVariant: Mainline
+  builderName: Scope3Reporting
+report:
+  scope3:
+    intervention: true
+boundaries:
+  - name: SE Wisconsin
+    id: se_wisconsin
+    boundaryType: DirectSourced
+  - name: SW Wisconsin
+    id: sw_wisconsin
+    boundaryType: DirectSourced
+  - name: NW Wisconsin
+    id: nw_wisconsin
+    boundaryType: DirectSourced
+  - name: NW Illinois
+    id: nw_illinois
+    boundaryType: DirectSourced
+  - name: NE Illinois
+    id: ne_illinois
+    boundaryType: DirectSourced
+  - name: SW Illinois
+    id: sw_illinois
+    boundaryType: DirectSourced
+  - name: NW Iowa
+    id: nw_iowa
+    boundaryType: DirectSourced
+  - name: NE Kansas
+    id: ne_kansas
+    boundaryType: DirectSourced
+  - name: SE Minnesota
+    id: se_minnesota
+    boundaryType: DirectSourced
+  - name: SW Minnesota
+    id: sw_minnesota
+    boundaryType: DirectSourced
+  - name: NW Minnesota
+    id: nw_minnesota
+    boundaryType: DirectSourced
+  - name: SE Iowa
+    id: se_iowa
+    boundaryType: DirectSourced
+  - name: East Nebraska
+    id: e_nebraska
+    boundaryType: DirectSourced

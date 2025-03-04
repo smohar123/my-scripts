@@ -1,0 +1,132 @@
+{
+    "jobId": "primient",
+    "jobVersion": "v1",
+    "jobYear": 2025,
+    "jobName": "Primient Supply Shed (Feb 2025)",
+    "externalId": "primient-supply-shed-v1",
+    "simulation": {
+        "startYear": 1985,
+        "firstReportYear": 2019,
+        "endYear": 2024,
+        "salusVariant": "Mainline",
+        "builderName": "Scope3Reporting",
+        "scenarioLibraryFilename": "inventory-baseline-scenario-template.json"
+    },
+    "boundaries": [
+        {
+            "name": "Decatur",
+            "id": "decatur",
+            "expansionGeometry": {
+                "geoidPrefixes": [
+                    "17113",
+                    "17019",
+                    "17107",
+                    "17147",
+                    "17039",
+                    "17115",
+                    "17167",
+                    "17021",
+                    "17139",
+                    "17173",
+                    "17053",
+                    "17179",
+                    "17091",
+                    "17109",
+                    "17057"
+                ]
+            }
+        },
+        {
+            "name": "Lafayette",
+            "id": "lafayette",
+            "expansionGeometry": {
+                "geoidPrefixes": [
+                    "18073",
+                    "18111",
+                    "17075",
+                    "18045",
+                    "18107",
+                    "18121",
+                    "17041",
+                    "18133",
+                    "18021",
+                    "18119"
+                ]
+            }
+        },
+        {
+            "name": "Loudon",
+            "id": "loudon",
+            "expansionGeometry": {
+                "geoidPrefixes": [
+                    "18113",
+                    "17063",
+                    "18183",
+                    "18003",
+                    "17105",
+                    "18169",
+                    "18069",
+                    "18103",
+                    "18179",
+                    "18017",
+                    "18053",
+                    "18009",
+                    "18067",
+                    "18159",
+                    "18095",
+                    "18035",
+                    "18057",
+                    "18161",
+                    "18047",
+                    "18031",
+                    "18005",
+                    "18153",
+                    "18079",
+                    "18071",
+                    "18093",
+                    "18077",
+                    "18083",
+                    "18101",
+                    "18027",
+                    "18143",
+                    "18175",
+                    "18117",
+                    "17191",
+                    "18019",
+                    "17047",
+                    "17185",
+                    "18125",
+                    "18051",
+                    "18037",
+                    "18025",
+                    "18061",
+                    "18123",
+                    "18173",
+                    "18147",
+                    "18163"
+                ]
+            }
+        },
+        {
+            "name": "Sagamore",
+            "id": "sagamore",
+            "expansionGeometry": {
+                "geoidPrefixes": [
+                    "18099",
+                    "18149",
+                    "18049",
+                    "18131",
+                    "18181",
+                    "18015",
+                    "18007",
+                    "18157",
+                    "18171",
+                    "18023",
+                    "18011",
+                    "18063",
+                    "18141"
+                ]
+            }
+        }
+    ]
+}

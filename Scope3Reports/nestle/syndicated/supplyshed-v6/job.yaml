@@ -1,0 +1,250 @@
+jobId: "nestle-syndicated-supply-shed" #
+jobVersion: "v6" # iteration / rerun counter
+jobYear: 2024
+jobName: "Nestle Syndicated Supply Shed V6 (Feb 2025)"
+externalId: "nestle-syndicated-supply-shed-v6"
+simulation:
+  startYear: 1985
+  firstReportYear: 2018
+  endYear: 2024
+  salusVariant: Mainline
+  builderName: Scope3Reporting
+  scenarioLibraryFilename: "inventory-baseline-scenario-template.json"
+boundaries:
+- name: SE Wisconsin
+  id: se_wisconsin
+  expansionGeometry:
+    geoidPrefixes:
+    - '55101' # Racine
+    - '55055' # Jefferson
+    - '55105' # Rock
+    - '55127' # Walworth
+    - '55131' # Washington
+    - '55027' # Dodge
+    - '55047' # Green Lake
+    - '55059' # Kenosha
+    - '55039' # Fond du Lac
+    - '55079' # Milwaukee
+    - '55021' # Columbia
+    - '55089' # Ozaukee
+    - '55025' # Dane
+    - '55133' # Waukesha
+- name: SW Wisconsin
+  id: sw_wisconsin
+  expansionGeometry:
+    geoidPrefixes:
+    - '55049' # Iowa
+    - '55045' # Green
+    - '55065' # Lafayette
+    - '55043' # Grant
+- name: NW Wisconsin
+  id: nw_wisconsin
+  expansionGeometry:
+    geoidPrefixes:
+    - '55107' # Rusk
+    - '55113' # Sawyer
+    - '55007' # Bayfield
+    - '55129' # Washburn
+    - '55013' # Burnett
+    - '55031' # Douglas
+    - '55005' # Barron
+- name: NW Illinois
+  id: nw_illinois
+  expansionGeometry:
+    geoidPrefixes:
+    - '17103' # Lee
+    - '17011' # Bureau
+    - '17201' # Winnebago
+    - '17141' # Ogle
+    - '17177' # Stephenson
+    - '17085' # Jo Daviess
+    - '17015' # Carroll
+- name: NE Illinois
+  id: ne_illinois
+  expansionGeometry:
+    geoidPrefixes:
+    - '17093' # Kendall
+    - '17007' # Boone
+    - '17063' # Grundy
+    - '17089' # Kane
+    - '17197' # Will
+    - '17111' # McHenry
+    - '17037' # DeKalb
+    - '17031' # Cook
+    - '17097' # Lake
+    - '17043' # DuPage
+    - '17099' # LaSalle
+- name: SW Illinois
+  id: sw_illinois
+  expansionGeometry:
+    geoidPrefixes:
+    - '17171' # Scott
+    - '17013' # Calhoun
+    - '17137' # Morgan
+    - '17061' # Greene
+    - '17149' # Pike
+    - '17001' # Adams
+    - '17067' # Hancock
+    - '17169' # Schuyler
+    - '17009' # Brown
+- name: NW Iowa
+  id: nw_iowa
+  expansionGeometry:
+    geoidPrefixes:
+    - '19189' # Winnebago
+    - '19147' # Palo Alto
+    - '19063' # Emmet
+    - '19109' # Kossuth
+    - '19081' # Hancock
+    - '19091' # Humboldt
+- name: NE Kansas
+  id: ne_kansas
+  expansionGeometry:
+    geoidPrefixes:
+    - '20111' # Lyon
+    - '20091' # Johnson
+    - '20105' # Lincoln
+    - '20031' # Coffey
+    - '20113' # McPherson
+    - '20139' # Osage
+    - '20107' # Linn
+    - '20169' # Saline
+    - '20201' # Washington
+    - '20027' # Clay
+    - '20131' # Nemaha
+    - '20085' # Jackson
+    - '20197' # Wabaunsee
+    - '20143' # Ottawa
+    - '20041' # Dickinson
+    - '20053' # Ellsworth
+    - '20029' # Cloud
+    - '20087' # Jefferson
+    - '20059' # Franklin
+    - '20209' # Wyandotte
+    - '20043' # Doniphan
+    - '20115' # Marion
+    - '20149' # Pottawatomie
+    - '20017' # Chase
+    - '20121' # Miami
+    - '20157' # Republic
+    - '20177' # Shawnee
+    - '20123' # Mitchell
+    - '20117' # Marshall
+    - '20003' # Anderson
+    - '20127' # Morris
+    - '20045' # Douglas
+    - '20089' # Jewell
+    - '20013' # Brown
+    - '20103' # Leavenworth
+    - '20161' # Riley
+    - '20005' # Atchison
+    - '20159' # Rice
+    - '20061' # Geary
+    - '20185' # Stafford
+    - '20155' # Reno
+    - '20151' # Pratt
+- name: SE Minnesota
+  id: se_minnesota
+  expansionGeometry:
+    geoidPrefixes:
+    - '27109' # Olmsted
+    - '27099' # Mower
+    - '27147' # Steele
+    - '27093' # Meeker
+    - '27009' # Benton
+    - '27043' # Faribault
+    - '27085' # McLeod
+    - '27161' # Waseca
+    - '27079' # Le Sueur
+    - '27131' # Rice
+    - '27039' # Dodge
+    - '27047' # Freeborn
+    - '27025' # Chisago
+    - '27019' # Carver
+    - '27123' # Ramsey
+    - '27157' # Wabasha
+    - '27059' # Isanti
+    - '27143' # Sibley
+    - '27003' # Anoka
+    - '27045' # Fillmore
+    - '27053' # Hennepin
+    - '27171' # Wright
+    - '27141' # Sherburne
+    - '27055' # Houston
+    - '27049' # Goodhue
+    - '27169' # Winona
+    - '27013' # Blue Earth
+    - '27163' # Washington
+    - '27103' # Nicollet
+    - '27139' # Scott
+    - '27095' # Mille Lacs
+    - '27145' # Stearns
+    - '27037' # Dakota
+    - '27065' # Kanabec
+- name: SW Minnesota
+  id: sw_minnesota
+  expansionGeometry:
+    geoidPrefixes:
+    - '27133' # Rock
+    - '27083' # Lyon
+    - '27149' # Stevens
+    - '27067' # Kandiyohi
+    - '27101' # Murray
+    - '27117' # Pipestone
+    - '27165' # Watonwan
+    - '27121' # Pope
+    - '27151' # Swift
+    - '27023' # Chippewa
+    - '27033' # Cottonwood
+    - '27015' # Brown
+    - '27127' # Redwood
+    - '27073' # Lac qui Parle
+    - '27063' # Jackson
+    - '27091' # Martin
+    - '27105' # Nobles
+    - '27155' # Traverse
+    - '27129' # Renville
+    - '27011' # Big Stone
+    - '27081' # Lincoln
+    - '27173' # Yellow Medicine
+- name: NW Minnesota
+  id: nw_minnesota
+  expansionGeometry:
+    geoidPrefixes:
+    - '27087' # Mahnomen
+    - '27113' # Pennington
+    - '27029' # Clearwater
+    - '27119' # Polk
+    - '27005' # Becker
+    - '27089' # Marshall
+    - '27007' # Beltrami
+    - '27107' # Norman
+    - '27125' # Red Lake
+    - '27027' # Clay
+- name: SE Iowa
+  id: se_iowa
+  expansionGeometry:
+    geoidPrefixes:
+    - '19123' # Mahaska
+    - '19101' # Jefferson
+    - '19007' # Appanoose
+    - '19157' # Poweshiek
+    - '19185' # Wayne
+    - '19107' # Keokuk
+    - '19117' # Lucas
+    - '19125' # Marion
+    - '19051' # Davis
+    - '19177' # Van Buren
+    - '19087' # Henry
+    - '19179' # Wapello
+    - '19095' # Iowa
+    - '19135' # Monroe
+    - '19111' # Lee
+    - '19183' # Washington
+- name: East Nebraska
+  id: e_nebraska
+  expansionGeometry:
+    geoidPrefixes:
+    - '31119' 
+    - '31141'
+    - '31011'

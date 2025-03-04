@@ -1,0 +1,42 @@
+jobId: "nestle-andersons-programs" #
+jobVersion: "v5-simplified-filtered" # feb 2025 run with final data fixes
+jobYear: 2024
+jobName: "Nestle / Andersons Programs v5 simplified filtered (feb 2025)"
+externalId: "nestle-andersons-programs-v5-simplified-filtered"
+simulation:
+  startYear: 1985
+  firstReportYear: 2018
+  endYear: 2024
+  salusVariant: Mainline
+  builderName: Scope3Reporting
+report:
+  scope3:
+    intervention: true
+boundaries:
+  - name: Auburn MI
+    id: auburn_mi
+    boundaryType: DirectSourced
+  - name: Clymers IN
+    id: clymers_in
+    boundaryType: DirectSourced
+  - name: Delphi IN
+    id: delphi_in
+    boundaryType: DirectSourced
+  - name: Greenville OH
+    id: greenville_oh
+    boundaryType: DirectSourced
+  - name: Matamora MI
+    id: matamora_mi
+    boundaryType: DirectSourced
+  - name: Maumee OH
+    id: maumee_oh
+    boundaryType: DirectSourced
+  - name: Oakley MI
+    id: oakley_mi
+    boundaryType: DirectSourced
+  - name: Oakville IN
+    id: oakville_in
+    boundaryType: DirectSourced
+  - name: Standish MI
+    id: standish_mi
+    boundaryType: DirectSourced

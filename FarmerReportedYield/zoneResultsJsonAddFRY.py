@@ -1,4 +1,5 @@
 import json
+import random
 
 # Open the JSON file and load its content
 with open('/Users/smohar/Development/cibo/experiment-factory/carver/src/test/resources/ExampleScope3Results.json', 'r') as file:
@@ -16,9 +17,9 @@ for farmer in json_data:
         applied_configuration[oneYear]["farmerReportedYield"] = yearly_emissions[oneYear]["simulatedYield"].copy()
 
         applied_configuration[oneYear]["farmerReportedYield"]["yieldKgHa"] = yearly_emissions[oneYear]["simulatedYield"]["yieldKgHa"] / 2
-        applied_configuration[oneYear]["farmerReportedYield"]["displayYield"] = int(yearly_emissions[oneYear]["simulatedYield"]["displayYield"] / 2)
+        applied_configuration[oneYear]["farmerReportedYield"]["displayYield"] = yearly_emissions[oneYear]["simulatedYield"]["displayYield"] / 2 + random.random()
         applied_configuration[oneYear]["farmerReportedYield"]["displayUnit"] = yearly_emissions[oneYear]["simulatedYield"]["displayUnit"]
 
 
-with open('/Users/smohar/Downloads/updated_ExampleScope3Results.json', 'w+') as f:
+with open('/Users/smohar/Downloads/fryAsDouble_ExampleScope3Results.json', 'w+') as f:
     json.dump(json_data, f)

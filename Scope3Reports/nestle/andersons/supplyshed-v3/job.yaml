@@ -1,0 +1,158 @@
+jobId: "nestle-andersons-supply-shed" #
+jobVersion: "v3" # iteration / rerun counter
+jobYear: 2024
+jobName: "Nestle / Andersons Supply Shed v3"
+externalId: "nestle-andersons-supply-shed-v3"
+simulation:
+  startYear: 1985
+  firstReportYear: 2018
+  endYear: 2024
+  salusVariant: Mainline
+  builderName: Scope3Reporting
+  scenarioLibraryFilename: "inventory-baseline-scenario-template.json"
+# sampling:
+#   seed: 12345
+#   subset: 1
+boundaries:
+- name: Matamora MI
+  id: matamora_mi
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -83.93458
+        - 41.71511
+      properties:
+        radius: 50 mi
+
+- name: Albion MI
+  id: albion_mi
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -84.78852
+        - 42.25809
+      properties:
+        radius: 100 mi
+
+- name: Oakley MI
+  id: oakley_mi
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -84.17195
+        - 43.14008
+      properties:
+        radius: 50 mi
+
+- name: Standish MI
+  id: standish_mi
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -83.95875
+        - 43.96201
+      properties:
+        radius: 50 mi
+
+- name: Auburn MI
+  id: auburn_mi
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -84.06938
+        - 43.60657
+      properties:
+        radius: 50 mi
+
+- name: Hemlock MI
+  id: hemlock_mi
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -84.229646
+        - 43.40997
+      properties:
+        radius: 50 mi
+
+- name: Clymers IN
+  id: clymers_in
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -86.439513
+        - 40.721248
+      properties:
+        radius: 100 mi
+
+- name: Delphi IN
+  id: delphi_in
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -86.643112
+        - 40.602745
+      properties:
+        radius: 50 mi
+
+- name: Greenville OH
+  id: greenville_oh
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -84.591904
+        - 40.080153
+      properties:
+        radius: 100 mi
+
+- name: Oakville IN
+  id: oakville_in
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -85.389209
+        - 40.079213
+      properties:
+        radius: 50 mi
+
+- name: Maumee OH
+  id: maumee_oh
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -83.66735
+        - 41.568443
+      properties:
+        radius: 50 mi

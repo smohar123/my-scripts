@@ -1,0 +1,465 @@
+metadata:
+  name: carver-job
+  namespace: carver-workflows-test-shelby
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    config.linkerd.io/proxy-cpu-limit: 1000m
+    config.linkerd.io/proxy-cpu-request: 100m
+    config.linkerd.io/skip-outbound-ports: '443'
+    linkerd.io/inject: enabled
+    meta.helm.sh/release-name: carver-workflows
+    meta.helm.sh/release-namespace: carver-workflows-test-shelby
+    workflows.argoproj.io/kill-cmd-linkerd-proxy: '["/usr/lib/linkerd/linkerd-await", "-S", "/bin/sleep", "0"]'
+  managedFields:
+    - manager: helm
+      operation: Update
+      apiVersion: argoproj.io/v1alpha1
+      time: '2025-02-14T05:44:42Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:config.linkerd.io/proxy-cpu-limit: {}
+            f:config.linkerd.io/proxy-cpu-request: {}
+            f:config.linkerd.io/skip-outbound-ports: {}
+            f:linkerd.io/inject: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:workflows.argoproj.io/kill-cmd-linkerd-proxy: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/managed-by: {}
+        f:spec: {}
+spec:
+  templates:
+    - name: carver-job
+      inputs:
+        parameters:
+          - name: jobPath
+          - name: image
+            value: 473168459077.dkr.ecr.us-west-2.amazonaws.com/carver:latest
+          - name: s3Bucket
+            value: com-cibo-salus-at-scale-alt
+          - name: useSpotInstances
+            value: 'no'
+      outputs: {}
+      metadata: {}
+      steps:
+        - - name: setup
+            template: setup
+            arguments:
+              parameters:
+                - name: baseS3URL
+                  value: >-
+                    s3://{{inputs.parameters.s3Bucket}}/{{inputs.parameters.jobPath}}
+                - name: scenarioLibraryURL
+                  value: s3://{{inputs.parameters.s3Bucket}}/scenario-library
+        - - name: geometry-expansion
+            template: geometry-expansion
+            arguments:
+              parameters:
+                - name: baseS3URL
+                  value: >-
+                    s3://{{inputs.parameters.s3Bucket}}/{{inputs.parameters.jobPath}}
+                - name: image
+                  value: '{{inputs.parameters.image}}'
+                - name: useSpotInstances
+                  value: '{{inputs.parameters.useSpotInstances}}'
+        - - name: simulation
+            arguments:
+              parameters:
+                - name: runYear
+                  value: >-
+                    {{=jsonpath(steps.setup.outputs.parameters.jobRequest,
+                    '$.jobYear')}}
+                - name: runTitle
+                  value: >-
+                    {{=jsonpath(steps.setup.outputs.parameters.jobRequest,
+                    '$.jobId')}}
+                - name: runVersion
+                  value: >-
+                    {{=jsonpath(steps.setup.outputs.parameters.jobRequest,
+                    '$.jobVersion')}}
+                - name: boundaryId
+                  value: '{{item}}'
+                - name: image
+                  value: '{{inputs.parameters.image}}'
+                - name: useSpotInstances
+                  value: '{{inputs.parameters.useSpotInstances}}'
+                - name: s3Bucket
+                  value: '{{inputs.parameters.s3Bucket}}'
+                - name: salusVariant
+                  value: '{{= trim(steps.setup.outputs.parameters.salusVariant)}}'
+            templateRef:
+              name: generic-runner
+              template: execute-generic-runner-steps
+            withParam: '{{steps.setup.outputs.parameters.boundaries}}'
+        - - name: aggregation
+            arguments:
+              parameters:
+                - name: targetPrefix
+                  value: '{{inputs.parameters.jobPath}}'
+                - name: targetBucket
+                  value: '{{inputs.parameters.s3Bucket}}'
+                - name: failIfIncomplete
+                  value: 'false'
+                - name: image
+                  value: '{{inputs.parameters.image}}'
+            templateRef:
+              name: status-aggregator
+              template: execute-status-aggregator
+        - - name: report-generation-per-boundary
+            arguments:
+              parameters:
+                - name: runYear
+                  value: >-
+                    {{=jsonpath(steps.setup.outputs.parameters.jobRequest,
+                    '$.jobYear')}}
+                - name: runTitle
+                  value: >-
+                    {{=jsonpath(steps.setup.outputs.parameters.jobRequest,
+                    '$.jobId')}}
+                - name: runVersion
+                  value: >-
+                    {{=jsonpath(steps.setup.outputs.parameters.jobRequest,
+                    '$.jobVersion')}}
+                - name: reportType
+                  value: >-
+                    {{=jsonpath(steps.setup.outputs.parameters.reportingParams,
+                    '$.reportType')}}
+                - name: reportAggregationLevel
+                  value: >-
+                    {{=jsonpath(steps.setup.outputs.parameters.reportingParams,
+                    '$.aggregationLevel')}}
+                - name: boundaryId
+                  value: '{{item}}'
+                - name: image
+                  value: '{{inputs.parameters.image}}'
+                - name: useSpotInstances
+                  value: '{{inputs.parameters.useSpotInstances}}'
+                - name: s3Bucket
+                  value: '{{inputs.parameters.s3Bucket}}'
+            templateRef:
+              name: scope3-report-generator
+              template: execute-scope3-report-generator
+            withParam: '{{steps.setup.outputs.parameters.boundaries}}'
+        - - name: combine-reports
+            arguments:
+              parameters:
+                - name: image
+                  value: '{{inputs.parameters.image}}'
+                - name: baseS3URL
+                  value: >-
+                    s3://{{inputs.parameters.s3Bucket}}/{{inputs.parameters.jobPath}}
+                - name: reportName
+                  value: default
+            templateRef:
+              name: combine-reports
+              template: execute-combine-reports
+        - - name: carver-qa-final
+            arguments:
+              parameters:
+                - name: targetPrefix
+                  value: '{{inputs.parameters.jobPath}}'
+                - name: targetBucket
+                  value: '{{inputs.parameters.s3Bucket}}'
+                - name: useSpotInstances
+                  value: '{{inputs.parameters.useSpotInstances}}'
+            templateRef:
+              name: carver-scope3-qa
+              template: execute-carver-qa
+      parallelism: 24
+    - name: setup
+      inputs:
+        parameters:
+          - name: baseS3URL
+          - name: scenarioLibraryURL
+      outputs:
+        parameters:
+          - name: jobRequest
+            valueFrom:
+              path: /stage/job.json
+          - name: boundaries
+            valueFrom:
+              path: /stage/boundaries.json
+          - name: reportingParams
+            valueFrom:
+              path: /stage/reportingParams.json
+          - name: salusVariant
+            valueFrom:
+              path: /stage/salusVariant.txt
+      metadata: {}
+      containerSet:
+        containers:
+          - name: pre-flight-check
+            image: amazon/aws-cli:2.17.13
+            command:
+              - sh
+              - '-c'
+            args:
+              - |
+                if ! aws s3 ls {{inputs.parameters.baseS3URL}}; then
+                  echo "Error: The base S3 URL does not exist."
+                  exit 1
+                fi
+                if ! aws s3 ls {{inputs.parameters.baseS3URL}}/job.json; then
+                  if ! aws s3 ls {{inputs.parameters.baseS3URL}}/job.yaml; then
+                    echo "Error: The job request input does not exist."
+                    exit 1
+                  fi
+                fi
+                if ! aws s3 ls {{inputs.parameters.scenarioLibraryURL}}; then
+                  echo "Error: The scenario library S3 URL does not exist."
+                  exit 1
+                fi
+            resources:
+              limits:
+                ephemeral-storage: 500Mi
+                memory: 512M
+              requests:
+                cpu: '4'
+                memory: 512M
+          - name: sync-job-inputs-from-s3
+            image: amazon/aws-cli:2.17.13
+            command:
+              - sh
+              - '-c'
+            args:
+              - >
+                mkdir -p /stage/scenariomode/scenarios
+
+                aws s3 sync {{inputs.parameters.baseS3URL}} /stage/ --exclude
+                "**/batchmode" --exclude "**/inputs" --exclude "**/outputs"
+            resources:
+              limits:
+                ephemeral-storage: 500Mi
+                memory: 512M
+              requests:
+                cpu: '4'
+                memory: 512M
+            dependencies:
+              - pre-flight-check
+          - name: config-expansion
+            image: ddev/ddev-utilities:latest
+            command:
+              - sh
+              - '-c'
+            args:
+              - >
+                if test -f /stage/job.yaml; then
+                  cat /stage/job.yaml | yq -o json > /stage/job.json
+                  echo "Converted job.yaml to JSON."
+                fi
+
+                if ! test -f /stage/config.json; then
+                  cat /stage/job.json | jq -r '.simulation | pick(.builderName)' > /stage/config.json
+                  echo "Wrote config.json from job request."
+                  cat /stage/config.json
+                fi
+
+
+                cat /stage/job.json | jq -r '.simulation | .salusVariant //
+                "Mainline"' > /stage/salusVariant.txt
+
+                echo "Wrote salusVariant.txt from job request."
+
+                cat /stage/salusVariant.txt
+
+
+                cat /stage/job.json | jq -r '[.boundaries[].id]' >
+                /stage/boundaries.json
+
+                cat /stage/job.json | jq -r \
+                  '.report?.scope3? | { reportType: (.intervention | if . == true then "Intervention" else "SupplyShed" end), aggregationLevel: (.aggregationLevel | if . != null then . else "PerBoundary" end)}' \
+                  > /stage/reportingParams.json
+            resources:
+              limits:
+                ephemeral-storage: 500Mi
+                memory: 512M
+              requests:
+                cpu: '4'
+                memory: 512M
+            dependencies:
+              - sync-job-inputs-from-s3
+          - name: scenario-expansion-1
+            image: python:alpine3.6
+            command:
+              - python
+              - '-c'
+            args:
+              - |
+                import json, os
+                sf = '/stage/scenariomode/scenarios/scenarios.json'
+                sp = '/stage/scenariomode/scenarios/scenariopointer.txt'
+                request = json.load(open('/stage/job.json', 'r'))
+                if request['simulation'].get('scenario'):
+                  if os.path.exists(sf):
+                    print("Error: The inline scenario in the job request would overwrite scenario.json on S3.")
+                    exit(1)
+                  with open(sf, 'w') as f:
+                    json.dump(request['simulation']['scenario'], f)
+                    print("Wrote inline scenario to ", sf)
+                else:
+                  scenarioFilename = request['simulation'].get('scenarioLibraryFilename')
+                  if scenarioFilename:
+                    if os.path.exists(sp):
+                      print("Error: The scenarioLibraryFilename in the job request would overwrite scenariopointer.txt on S3.")
+                    with open(sp, 'w') as f:
+                      f.write(scenarioFilename)
+                      print("Wrote new scenario pointer ", scenarioFilename, " to ", sp)
+            resources:
+              limits:
+                ephemeral-storage: 500Mi
+                memory: 512M
+              requests:
+                cpu: '4'
+                memory: 512M
+            dependencies:
+              - config-expansion
+              - sync-job-inputs-from-s3
+          - name: scenario-expansion-2
+            image: amazon/aws-cli:2.17.13
+            command:
+              - sh
+              - '-c'
+              - '-e'
+            args:
+              - >
+                if test -f /stage/scenariomode/scenarios/scenariopointer.txt;
+                then
+                  aws s3 cp "{{inputs.parameters.scenarioLibraryURL}}/"$(cat /stage/scenariomode/scenarios/scenariopointer.txt) /stage/scenarios.tmpl.json \
+                    || (echo "Error: Could not copy scenario library from S3." && exit 1)
+                  echo "Copied library scenario from S3 to /stage/scenarios.tmpl.json."
+                  rm /stage/scenariomode/scenarios/scenariopointer.txt
+                  echo "Removed scenariopointer.txt."
+                fi
+            resources:
+              limits:
+                ephemeral-storage: 500Mi
+                memory: 512M
+              requests:
+                cpu: '4'
+                memory: 512M
+            dependencies:
+              - scenario-expansion-1
+          - name: scenario-expansion-3
+            image: python:alpine3.6
+            command:
+              - python
+              - '-c'
+            args:
+              - |
+                import json, os, re
+                job = json.load(open('/stage/job.json', 'r'))
+                if os.path.exists('/stage/scenarios.tmpl.json'):
+                  with open('/stage/scenarios.tmpl.json', 'r') as fin:
+                      scenarios = re.sub(r'{{(\w+)}}', lambda m: "%s" % job["simulation"].get(m.group(1)), fin.read())
+                      with open('/stage/scenariomode/scenarios/scenarios.json', 'w') as fout:
+                          fout.write(scenarios)
+                          print("Copied scenarios from library template to scenariomode/scenarios/scenarios.json with variable substitution.")
+                      os.unlink('/stage/scenarios.tmpl.json')
+            resources:
+              limits:
+                ephemeral-storage: 500Mi
+                memory: 512M
+              requests:
+                cpu: '4'
+                memory: 512M
+            dependencies:
+              - scenario-expansion-2
+          - name: main
+            image: amazon/aws-cli:2.17.13
+            command:
+              - sh
+              - '-c'
+            args:
+              - |
+                aws s3 sync /stage/ {{inputs.parameters.baseS3URL}}
+            resources:
+              limits:
+                ephemeral-storage: 500Mi
+                memory: 512M
+              requests:
+                cpu: '4'
+                memory: 512M
+            dependencies:
+              - scenario-expansion-3
+              - config-expansion
+        volumeMounts:
+          - name: workspace
+            mountPath: /stage
+      volumes:
+        - name: workspace
+          emptyDir: {}
+      serviceAccountName: carverworkflowrole
+    - name: geometry-expansion
+      inputs:
+        parameters:
+          - name: baseS3URL
+          - name: image
+          - name: useSpotInstances
+      outputs: {}
+      nodeSelector:
+        spot: 'no'
+      metadata:
+        annotations:
+          config.linkerd.io/proxy-cpu-limit: 1000m
+          config.linkerd.io/proxy-cpu-request: 100m
+          config.linkerd.io/skip-outbound-ports: '443'
+          linkerd.io/inject: enabled
+          workflows.argoproj.io/kill-cmd-linkerd-proxy: '["/usr/lib/linkerd/linkerd-await", "-S", "/bin/sleep", "0"]'
+        labels:
+          template: geometry-expansion
+      container:
+        name: ''
+        image: '{{inputs.parameters.image}}'
+        command:
+          - /opt/docker/bin/carver
+        args:
+          - '-main'
+          - com.cibo.carver.app.geometrystaging.GeometryExpander
+          - '--'
+          - '--jobRequestURL'
+          - '{{inputs.parameters.baseS3URL}}/job.json'
+        env:
+          - name: GEOMANCER_GRPC_HOST
+            value: '{{workflow.parameters.geomancerHost}}'
+          - name: CONTINUUM_DATA
+            value: /tmp/.continuum
+          - name: JAVA_OPTS
+            value: '-XX:MaxRAMPercentage=50 -XX:+UseG1GC'
+        resources:
+          limits:
+            ephemeral-storage: 1Gi
+            memory: 8Gi
+          requests:
+            cpu: '4'
+            memory: 8Gi
+        imagePullPolicy: Always
+      retryStrategy:
+        limit: '3'
+        retryPolicy: Always
+        backoff:
+          duration: 5s
+          factor: '2'
+      serviceAccountName: carverworkflowrole
+      podSpecPatch: >-
+        {"containers":[{"name":"main", "nodeSelector": {"spot":
+        "{{inputs.parameters.useSpotInstances}}"}}]}
+  entrypoint: carver-job
+  arguments:
+    parameters:
+      - name: image
+        value: 473168459077.dkr.ecr.us-west-2.amazonaws.com/carver:latest
+      - name: s3Bucket
+        value: com-cibo-salus-at-scale-alt
+      - name: geomancerHost
+        value: geomancer.geomancer-dev.svc.cluster.local
+      - name: geomancerPort
+        value: '50051'
+      - name: sylvesterUri
+        value: http://sylvester-dev.sylvester-dev.svc.cluster.local
+      - name: cropnosisUri
+        value: http://cropnosis-dev.cropnosis-dev.svc.cluster.local
