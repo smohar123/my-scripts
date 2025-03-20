@@ -1,0 +1,19 @@
+jobId: "ingredion-farmer-data" #
+jobVersion: "v1" 
+jobYear: 2024
+jobName: "Ingredion Farmer Data V1 (Mar 2025)"
+externalId: "ingredion-farmer-data-v1"
+simulation:
+  startYear: 1985
+  firstReportYear: 2018
+  endYear: 2024
+  salusVariant: Mainline
+  builderName: Scope3Reporting
+report:
+  scope3:
+    intervention: true
+boundaries:
+  - name: Auburn MI
+    id: auburn_mi
+    boundaryType: DirectSourced
+

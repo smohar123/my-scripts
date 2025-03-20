@@ -1,0 +1,28 @@
+jobId: "ingredion-supply-shed" 
+jobVersion: "v1" 
+jobYear: 2024
+jobName: "Ingredion Supply Shed V1 (Mar 2025)"
+externalId: "ingredion-supply-shed-v1"
+simulation:
+  startYear: 1985
+  firstReportYear: 2018
+  endYear: 2024
+  salusVariant: Mainline
+  builderName: Scope3Reporting
+  scenarioLibraryFilename: "inventory-baseline-scenario-template.json"
+# sampling:
+#   seed: 12345
+#   subset: 1
+boundaries:
+- name: Matamora MI
+  id: matamora_mi
+  expansionGeometry:
+    features:
+    - type: Feature
+      geometry:
+        type: Point
+        coordinates:
+        - -83.93458
+        - 41.71511
+      properties:
+        radius: 50 mi
