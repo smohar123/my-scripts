@@ -1,22 +1,4 @@
-jobId: "ingredion-supply-shed" 
-jobVersion: "v1-test" 
-jobYear: 2025
-jobName: "Ingredion Supply Shed V1 (Mar 2025)"
-externalId: "ingredion-supply-shed-v1"
-simulation:
-  startYear: 1985
-  firstReportYear: 2019
-  endYear: 2024
-  salusVariant: Mainline
-  builderName: Scope3Reporting
-  scenarioLibraryFilename: "inventory-baseline-scenario-template.json"
-sampling:
-  seed: 12345
-  subset: 1
-boundaries:
-- name: Argo IL
-  id: argo_il
-  expansionGeometry:
+- expansionGeometry:
     geoidPrefixes:
     - '55027' # Dodge
     - '55131' # Washington
@@ -41,9 +23,9 @@ boundaries:
     - '17037' # DeKalb
     - '17043' # DuPage
     - '17103' # Lee
-- name: Atchison KS    
-  id: atchison_ks
-  expansionGeometry:
+  id: argo-il
+  name: Argo-IL
+- expansionGeometry:
     geoidPrefixes:
     - '19155' # Pottawattamie
     - '19121' # Madison
@@ -150,9 +132,9 @@ boundaries:
     - '20207' # Woodson
     - '20001' # Allen
     - '20011' # Bourbon
-- name: Cedar Rapids IA    
-  id: cedar_rapids_ia
-  expansionGeometry:
+  id: atchison-ks
+  name: Atchison-KS
+- expansionGeometry:
     geoidPrefixes:
     - '55063' # La Crosse
     - '27055' # Houston
@@ -259,9 +241,9 @@ boundaries:
     - '17015' # Carroll
     - '17195' # Whiteside
     - '17103' # Lee
-- name: Council Bluffs-IA    
-  id: council bluffs-ia
-  expansionGeometry:
+  id: cedar rapids-ia
+  name: Cedar Rapids-IA
+- expansionGeometry:
     geoidPrefixes:
     - '19167' # Sioux
     - '19141' # OBrien
@@ -372,9 +354,9 @@ boundaries:
     - '20085' # Jackson
     - '20161' # Riley
     - '20149' # Pottawatomie
-- name: Jacksonville IL   
-  id: jacksonville_il
-  expansionGeometry:
+  id: council bluffs-ia
+  name: Council Bluffs-IA
+- expansionGeometry:
     geoidPrefixes:
     - '17073' # Henry
     - '17131' # Mercer
@@ -451,9 +433,9 @@ boundaries:
     - '17133' # Monroe
     - '17189' # Washington
     - '29099' # Jefferson
-- name: Kansas City MO    
-  id: kansas_city_mo
-  expansionGeometry:
+  id: jacksonville-il
+  name: Jacksonville-IL
+- expansionGeometry:
     geoidPrefixes:
     - '19155' # Pottawattamie
     - '19121' # Madison
@@ -600,3 +582,5 @@ boundaries:
     - '29145' # Newton
     - '40035' # Craig
     - '40115' # Ottawa
+  id: kansas city-mo
+  name: Kansas City-MO
