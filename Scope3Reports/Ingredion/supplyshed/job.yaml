@@ -1,5 +1,5 @@
 jobId: "ingredion-supply-shed" 
-jobVersion: "v1-test" 
+jobVersion: "v1" 
 jobYear: 2025
 jobName: "Ingredion Supply Shed V1 (Mar 2025)"
 externalId: "ingredion-supply-shed-v1"
@@ -10,9 +10,9 @@ simulation:
   salusVariant: Mainline
   builderName: Scope3Reporting
   scenarioLibraryFilename: "inventory-baseline-scenario-template.json"
-sampling:
-  seed: 12345
-  subset: 1
+# sampling:
+#   seed: 12345
+#   subsetAbsolute: 1
 boundaries:
 - name: Argo IL
   id: argo_il
@@ -260,7 +260,7 @@ boundaries:
     - '17195' # Whiteside
     - '17103' # Lee
 - name: Council Bluffs-IA    
-  id: council bluffs-ia
+  id: council_bluffs_ia
   expansionGeometry:
     geoidPrefixes:
     - '19167' # Sioux

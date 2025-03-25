@@ -1,6 +1,6 @@
 {
     "jobId": "ingredion-supply-shed",
-    "jobVersion": "v1-test",
+    "jobVersion": "v1",
     "jobYear": 2025,
     "jobName": "Ingredion Supply Shed V1 (Mar 2025)",
     "externalId": "ingredion-supply-shed-v1",
@@ -11,10 +11,6 @@
         "salusVariant": "Mainline",
         "builderName": "Scope3Reporting",
         "scenarioLibraryFilename": "inventory-baseline-scenario-template.json"
-    },
-    "sampling": {
-        "seed": 12345,
-        "subset": 1
     },
     "boundaries": [
         {
@@ -276,7 +272,7 @@
         },
         {
             "name": "Council Bluffs-IA",
-            "id": "council bluffs-ia",
+            "id": "council_bluffs_ia",
             "expansionGeometry": {
                 "geoidPrefixes": [
                     "19167",
