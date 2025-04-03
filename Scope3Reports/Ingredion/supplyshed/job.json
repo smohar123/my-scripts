@@ -1,9 +1,9 @@
 {
-    "jobId": "ingredion-supply-shed",
-    "jobVersion": "v1",
+    "jobId": "ingredion-supplyshed",
+    "jobVersion": "v1-test",
     "jobYear": 2025,
     "jobName": "Ingredion Supply Shed V1 (Mar 2025)",
-    "externalId": "ingredion-supply-shed-v1",
+    "externalId": "ingredion-supplyshed-v1",
     "simulation": {
         "startYear": 1985,
         "firstReportYear": 2019,

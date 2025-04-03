@@ -1,18 +1,18 @@
 jobId: "primient-sagamore" 
 jobVersion: "v1" 
 jobYear: 2025
-jobName: "Primient sagamore Intervention 2023 Data (Mar 2025)"
-externalId: "primient-Sagamore-intervention-2023-data"
+jobName: "Primient Sagamore Intervention 2023 Data (Mar 2025)"
+externalId: "primient-sagamore-intervention-2023-data"
 simulation:
   startYear: 1985
-  firstReportYear: 2017
-  endYear: 2023
+  firstReportYear: 2019
+  endYear: 2024
   salusVariant: Mainline
   builderName: Scope3Reporting
 report:
   scope3:
     intervention: true
 boundaries:
-  - name: Primient sagamore
+  - name: Primient Sagamore
     id: primient-sagamore
     boundaryType: DirectSourced

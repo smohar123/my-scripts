@@ -1,0 +1,96 @@
+[
+    {
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [
+                        -88.682638,
+                        42.4657295
+                    ],
+                    [
+                        -88.682638,
+                        42.4622978
+                    ],
+                    [
+                        -88.6811487,
+                        42.4622978
+                    ],
+                    [
+                        -88.6812222,
+                        42.4642782
+                    ],
+                    [
+                        -88.6818658,
+                        42.4645359
+                    ],
+                    [
+                        -88.6822887,
+                        42.4644003
+                    ],
+                    [
+                        -88.6820864,
+                        42.4649835
+                    ],
+                    [
+                        -88.682638,
+                        42.4657295
+                    ]
+                ]
+            ]
+        },
+        "configuration": {
+            "startYear": 1985,
+            "endYear": 2024,
+            "firstReportYear": 2019,
+            "emissionsConfig": [
+                {
+                    "seasonalConfiguration": {
+                        "year": 2024,
+                        "useRasterAgronomoModels": true,
+                        "crop": "LAND_USE_SOYBEANS",
+                        "maturity": null,
+                        "variety": null,
+                        "gduSilking": null,
+                        "gduMaturity": null,
+                        "kernelPotential": null,
+                        "kernelFillRate": null,
+                        "plantingDay": {
+                            "month": 4,
+                            "day": 14,
+                            "offset": "CurrentYear"
+                        },
+                        "plantingDensity": null,
+                        "harvestDay": null,
+                        "residueRemovalPct": 0.0,
+                        "fertilizer": [],
+                        "fertilizerReduction": null,
+                        "irrigation": null,
+                        "irrigationEvents": [],
+                        "tillageSelection": "NoTill",
+                        "tillageEvents": [],
+                        "hasCoverCrop": false,
+                        "coverCropType": null,
+                        "coverCropParams": null,
+                        "farmerReportedYield": {
+                            "yieldKgHa": 4037.081694381192,
+                            "displayYield": 69.0,
+                            "displayUnit": "bu/acre (Soy)"
+                        }
+                    },
+                    "grazingInformation": null,
+                    "transportationMiles": null,
+                    "biomassBurningFraction": null,
+                    "irrigationFuelInfo": null,
+                    "programMode": "Intervention"
+                }
+            ],
+            "landUseChange": null,
+            "weatherSelection": null,
+            "subdivisionSelection": null,
+            "managementConfig": null,
+            "useRasterAgronomoModels": null
+        },
+        "description": "::::3942325a-ac30-41fa-b934-3b8c3608923b"
+    }
+]

@@ -19,7 +19,7 @@ python3 ../yaml_to_json.py ./job.yaml job.json
 aws s3 rm --recursive s3://${BUCKET}/GenericRunner/${YEAR}/${NAME}/${VERSION}
 aws s3 cp ./job.json s3://${BUCKET}/GenericRunner/${YEAR}/${NAME}/${VERSION}/job.json
 aws s3 cp --recursive s3://com-cibo-salus-at-scale/GenericRunner/2024/primient-${SUPPYSHED}/batchmode/unprepared_inputs/ \
-  s3://${BUCKET}/GenericRunner/${YEAR}/${NAME}/${VERSION}/batchmode/unprepared_inputs/primient-${SUPPYSHED}/
+                      s3://${BUCKET}/GenericRunner/${YEAR}/${NAME}/${VERSION}/batchmode/unprepared_inputs/primient-${SUPPYSHED}/
 
 argo submit -n ${NAMESPACE} -l user=smohar -l runType=intervention --from workflowtemplate/carver-job \
   -p jobPath=GenericRunner/${YEAR}/${NAME}/${VERSION} \

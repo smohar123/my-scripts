@@ -12,13 +12,16 @@ NAME=$(cat job.yaml | yq .jobId)
 YEAR=$(cat job.yaml | yq .jobYear)
 VERSION=$(cat job.yaml | yq .jobVersion)
 
-DATA_DIR="/Users/smohar/Development/cibo/my-scripts/Scope3Reports/Ingredion/supplyshed"
+RUN_TYPE="supplyshed"
+DATA_DIR="/Users/smohar/Development/cibo/my-scripts/Scope3Reports/Ingredion/${RUN_TYPE}"
+JOB_PATH="GenericRunner/${YEAR}/${NAME}/${VERSION}"
 
-python3 ../../data_prep/yaml_to_json.py $DATA_DIR/job.yaml $DATA_DIR/job.json
-aws s3 rm --recursive s3://${BUCKET}/GenericRunner/${YEAR}/${NAME}/${VERSION}
-aws s3 cp $DATA_DIR/job.json s3://${BUCKET}/GenericRunner/${YEAR}/${NAME}/${VERSION}/job.json
+python3 ../../data_prep/yaml_to_json.py ${DATA_DIR}/job.yaml ${DATA_DIR}/job.json
+# Careful! Will delete if the version doesn't update
+aws s3 rm --recursive s3://${BUCKET}/${JOB_PATH}
+aws s3 cp ${DATA_DIR}/job.json s3://${BUCKET}/${JOB_PATH}/job.json
 
-argo submit -n ${NAMESPACE} -l user=smohar -l runType=supplyshed --from workflowtemplate/carver-job \
-  -p jobPath=GenericRunner/${YEAR}/${NAME}/${VERSION} \
+argo submit -n ${NAMESPACE} -l user=smohar -l runType=${RUN_TYPE} --from workflowtemplate/carver-job \
+  -p jobPath=${JOB_PATH} \
   -p image=${IMAGE} \
   -p s3Bucket=${BUCKET}

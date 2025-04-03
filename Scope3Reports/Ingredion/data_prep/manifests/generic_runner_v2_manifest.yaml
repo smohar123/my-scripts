@@ -1,0 +1,270 @@
+metadata:
+  annotations:
+    config.linkerd.io/proxy-cpu-limit: 1000m
+    config.linkerd.io/proxy-cpu-request: 100m
+    config.linkerd.io/skip-outbound-ports: "443"
+    linkerd.io/inject: enabled
+    meta.helm.sh/release-name: carver-workflows
+    meta.helm.sh/release-namespace: carver-workflows-test-smohar
+    workflows.argoproj.io/kill-cmd-linkerd-proxy: '["/usr/lib/linkerd/linkerd-await",
+      "-S", "/bin/sleep", "0"]'
+  creationTimestamp: "2025-03-25T16:05:16Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  managedFields:
+  - apiVersion: argoproj.io/v1alpha1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:config.linkerd.io/proxy-cpu-limit: {}
+          f:config.linkerd.io/proxy-cpu-request: {}
+          f:config.linkerd.io/skip-outbound-ports: {}
+          f:linkerd.io/inject: {}
+          f:meta.helm.sh/release-name: {}
+          f:meta.helm.sh/release-namespace: {}
+          f:workflows.argoproj.io/kill-cmd-linkerd-proxy: {}
+        f:labels:
+          .: {}
+          f:app.kubernetes.io/managed-by: {}
+      f:spec: {}
+    manager: helm
+    operation: Update
+    time: "2025-03-25T16:05:16Z"
+  name: generic-runner
+  namespace: carver-workflows-test-smohar
+  resourceVersion: "700010543"
+  uid: 9925c177-cabf-40ef-a4c8-711e3f35f17f
+spec:
+  arguments:
+    parameters:
+    - name: runTitle
+      value: '{{workflow.creationTimestamp.Y}}{{workflow.creationTimestamp.m}}{{workflow.creationTimestamp.d}}-{{workflow.creationTimestamp.H}}{{workflow.creationTimestamp.M}}{{workflow.creationTimestamp.S}}'
+    - name: image
+      value: 473168459077.dkr.ecr..amazonaws.com/carver:latest
+    - name: geomancerHost
+      value: geomancer.geomancer-.svc.cluster.local
+    - name: geomancerPort
+      value: "50051"
+    - name: sylvesterUri
+      value: http://sylvester-.sylvester-.svc.cluster.local
+    - name: cropnosisUri
+      value: http://cropnosis-.cropnosis-.svc.cluster.local
+  entrypoint: execute-generic-runner-steps
+  templates:
+  - inputs:
+      parameters:
+      - name: runTitle
+      - name: runVersion
+        value: ""
+      - name: runYear
+        value: '{{workflow.creationTimestamp.Y}}'
+      - name: boundaryId
+        value: ""
+      - name: image
+        value: 473168459077.dkr.ecr..amazonaws.com/carver:latest
+      - name: useSpotInstances
+        value: "no"
+      - name: s3Bucket
+        value: com-cibo-carver-{{ .Values.ciboEnvironment }}
+      - name: salusVariant
+        value: MVRv1
+    metadata: {}
+    name: execute-generic-runner-steps
+    outputs: {}
+    parallelism: 128
+    steps:
+    - - arguments:
+          parameters:
+          - name: runTitle
+            value: '{{inputs.parameters.runTitle}}'
+          - name: runVersion
+            value: '{{inputs.parameters.runVersion}}'
+          - name: runYear
+            value: '{{inputs.parameters.runYear}}'
+          - name: boundaryId
+            value: '{{inputs.parameters.boundaryId}}'
+          - name: image
+            value: '{{inputs.parameters.image}}'
+          - name: s3Bucket
+            value: '{{inputs.parameters.s3Bucket}}'
+          - name: useSpotInstances
+            value: '{{inputs.parameters.useSpotInstances}}'
+        name: generic-runner-orchestration
+        template: generic-runner-orchestration
+    - - arguments:
+          parameters:
+          - name: group
+            value: '{{item}}'
+          - name: runTitle
+            value: '{{inputs.parameters.runTitle}}'
+          - name: runVersion
+            value: '{{inputs.parameters.runVersion}}'
+          - name: runYear
+            value: '{{inputs.parameters.runYear}}'
+          - name: boundaryId
+            value: '{{inputs.parameters.boundaryId}}'
+          - name: image
+            value: '{{inputs.parameters.image}}'
+          - name: s3Bucket
+            value: '{{inputs.parameters.s3Bucket}}'
+          - name: salusVariant
+            value: '{{inputs.parameters.salusVariant}}'
+          - name: useSpotInstances
+            value: '{{inputs.parameters.useSpotInstances}}'
+        name: execute-generic-runner
+        template: execute-generic-runner
+        withParam: '{{steps.generic-runner-orchestration.outputs.parameters.groups}}'
+  - container:
+      args:
+      - -main
+      - com.cibo.carver.app.generic.GenericRunnerOrchestration
+      - --
+      - --runTitle
+      - '{{inputs.parameters.runTitle}}'
+      - --runVersion
+      - '{{inputs.parameters.runVersion}}'
+      - --runYear
+      - '{{inputs.parameters.runYear}}'
+      - --boundaryId
+      - '{{inputs.parameters.boundaryId}}'
+      - --writeLocalManifest
+      - /tmp/groupManifest.json
+      - --groupSize
+      - "1000"
+      - --s3Bucket
+      - '{{inputs.parameters.s3Bucket}}'
+      command:
+      - /opt/docker/bin/carver
+      env:
+      - name: CONTINUUM_DATA
+        value: /tmp/.continuum
+      image: '{{inputs.parameters.image}}'
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        limits:
+          ephemeral-storage: 3Gi
+          memory: 64Gi
+        requests:
+          cpu: "8"
+          memory: 64Gi
+    inputs:
+      parameters:
+      - name: runTitle
+      - name: runVersion
+      - name: runYear
+      - name: boundaryId
+      - name: image
+      - name: s3Bucket
+      - name: useSpotInstances
+    metadata:
+      annotations:
+        config.linkerd.io/proxy-cpu-limit: 1000m
+        config.linkerd.io/proxy-cpu-request: 100m
+        config.linkerd.io/skip-outbound-ports: "443"
+        linkerd.io/inject: enabled
+        workflows.argoproj.io/kill-cmd-linkerd-proxy: '["/usr/lib/linkerd/linkerd-await",
+          "-S", "/bin/sleep", "0"]'
+      labels:
+        boundaryId: '{{inputs.parameters.boundaryId}}'
+        runTitle: '{{inputs.parameters.runTitle}}'
+        runVersion: '{{inputs.parameters.runVersion}}'
+        runYear: '{{inputs.parameters.runYear}}'
+        template: generic-runner-orchestration
+    name: generic-runner-orchestration
+    nodeSelector:
+      spot: "no"
+    outputs:
+      parameters:
+      - name: groups
+        valueFrom:
+          path: /tmp/groupManifest.json
+    podSpecPatch: '{"containers":[{"name":"main", "nodeSelector": {"spot": "{{inputs.parameters.useSpotInstances}}"}}]}'
+    retryStrategy:
+      backoff:
+        duration: 5s
+        factor: "2"
+      limit: "2"
+      retryPolicy: Always
+    serviceAccountName: carver
+  - container:
+      args:
+      - -main
+      - com.cibo.carver.app.generic.GenericRunner
+      - --
+      - --runTitle
+      - '{{inputs.parameters.runTitle}}'
+      - --runVersion
+      - '{{inputs.parameters.runVersion}}'
+      - --runYear
+      - '{{inputs.parameters.runYear}}'
+      - --boundaryId
+      - '{{inputs.parameters.boundaryId}}'
+      - --groups
+      - '{{inputs.parameters.group}}'
+      - --s3Bucket
+      - '{{inputs.parameters.s3Bucket}}'
+      - --salusVariant
+      - '{{inputs.parameters.salusVariant}}'
+      command:
+      - /opt/docker/bin/carver
+      env:
+      - name: CONTINUUM_DATA
+        value: /tmp/.continuum
+      - name: SYLVESTER_URI
+        value: '{{workflow.parameters.sylvesterUri}}'
+      - name: CROPNOSIS_URI
+        value: '{{workflow.parameters.cropnosisUri}}'
+      - name: JAVA_OPTS
+        value: -XX:InitialRAMPercentage=70 -XX:MaxRAMPercentage=80 -XX:+UseG1GC
+      image: '{{inputs.parameters.image}}'
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        limits:
+          ephemeral-storage: 500Mi
+          memory: 32Gi
+        requests:
+          cpu: "16"
+          memory: 32Gi
+    inputs:
+      parameters:
+      - name: group
+      - name: runTitle
+      - name: runVersion
+      - name: runYear
+      - name: boundaryId
+      - name: image
+      - name: s3Bucket
+      - name: salusVariant
+      - name: useSpotInstances
+    metadata:
+      annotations:
+        config.linkerd.io/proxy-cpu-limit: 1000m
+        config.linkerd.io/proxy-cpu-request: 100m
+        config.linkerd.io/skip-outbound-ports: "443"
+        linkerd.io/inject: enabled
+        workflows.argoproj.io/kill-cmd-linkerd-proxy: '["/usr/lib/linkerd/linkerd-await",
+          "-S", "/bin/sleep", "0"]'
+      labels:
+        boundaryId: '{{inputs.parameters.boundaryId}}'
+        group: '{{inputs.parameters.group}}'
+        runTitle: '{{inputs.parameters.runTitle}}'
+        runVersion: '{{inputs.parameters.runVersion}}'
+        runYear: '{{inputs.parameters.runYear}}'
+        template: execute-generic-runner
+    name: execute-generic-runner
+    nodeSelector:
+      spot: "no"
+    outputs: {}
+    podSpecPatch: '{"containers":[{"name":"main", "nodeSelector": {"spot": "{{inputs.parameters.useSpotInstances}}"}}]}'
+    retryStrategy:
+      backoff:
+        duration: 5s
+        factor: "2"
+      limit: "5"
+      retryPolicy: Always
+    serviceAccountName: carver

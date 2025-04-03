@@ -1,0 +1,224 @@
+# run GenericRunnerOrchestration, which will prepare inputs for the GenericRunner
+# then, invoke GenericRunner using a separate pod for each prepared set of inputs
+
+# TODO: do we need to make a version of this that can run just the GenericRunner?
+#    maybe it could check whether the inputs are staged under `unprepared_inputs` or
+#   `prepared_inputs` when and skip running GenericRunnerOrchestration if applicable?
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: generic-runner
+  annotations: {{ .Values.annotations | toYaml | nindent 4 }}
+spec:
+  # Entrypoint and arguments are useful for running this template in isolation
+  # but are ignored when running it as part of the scope3-end-to-end workflow.
+  entrypoint: execute-generic-runner-steps
+  arguments:
+    parameters:
+    - name: runTitle
+      value: "{{`{{workflow.creationTimestamp.Y}}{{workflow.creationTimestamp.m}}{{workflow.creationTimestamp.d}}-{{workflow.creationTimestamp.H}}{{workflow.creationTimestamp.M}}{{workflow.creationTimestamp.S}}`}}"
+    # Default to not generating the parcel manifest when running generic runner directly.
+    # Scope3 end-to-end workflow will set this to true for Intervention type runs only.
+    - name: image
+      value: {{ include "carver.image" . }}
+    {{ include "carver.serviceDependencyParams" . | nindent 4 }}
+  templates:
+    # Steps template describing the generic runner orchestration + execution
+    - name: execute-generic-runner-steps
+      parallelism: 128
+      inputs:
+        parameters:
+        - name: runTitle
+        - name: runVersion
+          value: ""
+        - name: runYear
+          value: "{{`{{workflow.creationTimestamp.Y}}`}}"
+        - name: boundaryId
+          value: ""
+        - name: image
+          value: {{ include "carver.image" . }}
+        - name: useSpotInstances
+          value: "no"
+        - name: s3Bucket
+          value: "{{- include "carver.s3Bucket" . }}"
+        - name: salusVariant
+          value: "MVRv1"
+      steps:
+        - - name: generic-runner-orchestration
+            template: generic-runner-orchestration
+            arguments:
+              parameters:
+              - name: runTitle
+                value: "{{`{{inputs.parameters.runTitle}}`}}"
+              - name: runVersion
+                value: "{{`{{inputs.parameters.runVersion}}`}}"
+              - name: runYear
+                value: "{{`{{inputs.parameters.runYear}}`}}"
+              - name: boundaryId
+                value: "{{`{{inputs.parameters.boundaryId}}`}}"
+              - name: image
+                value: "{{`{{inputs.parameters.image}}`}}"
+              - name: s3Bucket
+                value: "{{`{{inputs.parameters.s3Bucket}}`}}"
+              - name: useSpotInstances
+                value: "{{`{{inputs.parameters.useSpotInstances}}`}}"
+        - - name: execute-generic-runner
+            template: execute-generic-runner
+            arguments:
+              parameters:
+              - name: group
+                value: "{{`{{item}}`}}"
+              - name: runTitle
+                value: "{{`{{inputs.parameters.runTitle}}`}}"
+              - name: runVersion
+                value: "{{`{{inputs.parameters.runVersion}}`}}"
+              - name: runYear
+                value: "{{`{{inputs.parameters.runYear}}`}}"
+              - name: boundaryId
+                value: "{{`{{inputs.parameters.boundaryId}}`}}"
+              - name: image
+                value: "{{`{{inputs.parameters.image}}`}}"
+              - name: s3Bucket
+                value: "{{`{{inputs.parameters.s3Bucket}}`}}"
+              - name: salusVariant
+                value: "{{`{{inputs.parameters.salusVariant}}`}}"
+              - name: useSpotInstances
+                value: "{{`{{inputs.parameters.useSpotInstances}}`}}"
+            withParam: "{{`{{steps.generic-runner-orchestration.outputs.parameters.groups}}`}}"
+    # Orchestration step to prepare inputs for GenericRunner
+    - name: generic-runner-orchestration
+      serviceAccountName: {{ .Values.serviceAccount }}
+      metadata:
+        annotations: {{ .Values.annotations | toYaml | nindent 10 }}
+        labels:
+          template: "generic-runner-orchestration"
+          runTitle: "{{`{{inputs.parameters.runTitle}}`}}"
+          runYear: "{{`{{inputs.parameters.runYear}}`}}"
+          runVersion: "{{`{{inputs.parameters.runVersion}}`}}"
+          boundaryId: "{{`{{inputs.parameters.boundaryId}}`}}"
+      inputs:
+        parameters:
+          - name: runTitle
+          - name: runVersion
+          - name: runYear
+          - name: boundaryId
+          - name: image
+          - name: s3Bucket
+          - name: useSpotInstances
+      nodeSelector:
+        spot: "no"
+      outputs:
+        parameters:
+        - name: groups
+          valueFrom:
+            path: /tmp/groupManifest.json
+      podSpecPatch: '{{`{"containers":[{"name":"main", "nodeSelector": {"spot": "{{inputs.parameters.useSpotInstances}}"}}]}`}}'
+      container:
+        image: "{{`{{inputs.parameters.image}}`}}"
+        imagePullPolicy: Always
+        command: ['/opt/docker/bin/carver']
+        args:
+          - "-main"
+          - "com.cibo.carver.app.generic.GenericRunnerOrchestration"
+          - "--"
+          - "--runTitle"
+          - "{{`{{inputs.parameters.runTitle}}`}}"
+          - "--runVersion"
+          - "{{`{{inputs.parameters.runVersion}}`}}"
+          - "--runYear"
+          - "{{`{{inputs.parameters.runYear}}`}}"
+          - "--boundaryId"
+          - "{{`{{inputs.parameters.boundaryId}}`}}"
+          - "--writeLocalManifest"
+          - "/tmp/groupManifest.json"
+          - "--groupSize"
+          - "1000"
+          - "--s3Bucket"
+          - "{{`{{inputs.parameters.s3Bucket}}`}}"
+        env:
+          - name: CONTINUUM_DATA
+            value: /tmp/.continuum
+        resources:
+          requests:
+            cpu: "8"
+            memory: 64Gi
+          limits:
+            memory: 64Gi
+            ephemeral-storage: "3Gi"
+      retryStrategy:
+        limit: "2"
+        retryPolicy: "Always"
+        backoff:
+          duration: "5s"
+          factor: "2"
+
+    # GenericRunner step
+    - name: execute-generic-runner
+      serviceAccountName: {{ .Values.serviceAccount }}
+      metadata:
+        annotations: {{ .Values.annotations | toYaml | nindent 10 }}
+        labels:
+            template: "execute-generic-runner"
+            runTitle: "{{`{{inputs.parameters.runTitle}}`}}"
+            runYear: "{{`{{inputs.parameters.runYear}}`}}"
+            runVersion: "{{`{{inputs.parameters.runVersion}}`}}"
+            boundaryId: "{{`{{inputs.parameters.boundaryId}}`}}"
+            group: "{{`{{inputs.parameters.group}}`}}"
+      nodeSelector:
+        spot: "no"
+      inputs:
+        parameters:
+        - name: group
+        - name: runTitle
+        - name: runVersion
+        - name: runYear
+        - name: boundaryId
+        - name: image
+        - name: s3Bucket
+        - name: salusVariant
+        - name: useSpotInstances
+      podSpecPatch: '{{`{"containers":[{"name":"main", "nodeSelector": {"spot": "{{inputs.parameters.useSpotInstances}}"}}]}`}}'
+      container:
+        image: "{{`{{inputs.parameters.image}}`}}"
+        imagePullPolicy: Always
+        command: ['/opt/docker/bin/carver']
+        args:
+          - "-main"
+          - "com.cibo.carver.app.generic.GenericRunner"
+          - "--"
+          - "--runTitle"
+          - "{{`{{inputs.parameters.runTitle}}`}}"
+          - "--runVersion"
+          - "{{`{{inputs.parameters.runVersion}}`}}"
+          - "--runYear"
+          - "{{`{{inputs.parameters.runYear}}`}}"
+          - "--boundaryId"
+          - "{{`{{inputs.parameters.boundaryId}}`}}"
+          - "--groups"
+          - "{{`{{inputs.parameters.group}}`}}"
+          - "--s3Bucket"
+          - "{{`{{inputs.parameters.s3Bucket}}`}}"
+          - "--salusVariant"
+          - "{{`{{inputs.parameters.salusVariant}}`}}"
+        env:
+          - name: CONTINUUM_DATA
+            value: /tmp/.continuum
+          - name: SYLVESTER_URI
+            value: "{{`{{workflow.parameters.sylvesterUri}}`}}"
+          - name: CROPNOSIS_URI
+            value: "{{`{{workflow.parameters.cropnosisUri}}`}}"
+          - name: JAVA_OPTS
+            value: "-XX:InitialRAMPercentage=70 -XX:MaxRAMPercentage=80 -XX:+UseG1GC"
+        resources:
+          requests:
+            cpu: "16"
+            memory: 32Gi
+          limits:
+            memory: 32Gi
+            ephemeral-storage: {{ .Values.defaultEphemeralStorageSize }}
+      retryStrategy:
+        limit: "5"
+        retryPolicy: "Always"
+        backoff:
+          duration: "5s"
+          factor: "2"

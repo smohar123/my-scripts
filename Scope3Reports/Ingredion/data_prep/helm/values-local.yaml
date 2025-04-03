@@ -1,0 +1,14 @@
+# Values that are present when the chart is run
+# from argocd but not otherwise.
+
+global:
+  awsAccountId: "473168459077"
+awsRegion: "us-west-2"
+awsBucketSuffix: "-alt"
+ciboEnvironment: dev
+
+image:
+  repoHost: "473168459077.dkr.ecr.us-west-2.amazonaws.com"
+
+serviceAccount: carverworkflowrole
+s3Bucket: "com-cibo-salus-at-scale"

@@ -1,0 +1,38 @@
+jobId: "ingredion-intervention" 
+jobVersion: "v1" 
+jobYear: 2025
+jobName: "Ingredion Farmer Data V1 (Mar 2025)"
+externalId: "ingredion-intervention-v1"
+simulation:
+  startYear: 1985
+  firstReportYear: 2019
+  endYear: 2024
+  salusVariant: Mainline
+  builderName: Scope3Reporting
+report:
+  scope3:
+    intervention: true
+# sampling:
+#   seed: 12345
+#   subsetAbsolute: 1    
+boundaries:
+  - name: Argo IL
+    id: argo_il
+    boundaryType: DirectSourced
+  # - name: Atchison KS    
+  #   id: atchison_ks
+  #   boundaryType: DirectSourced
+  - name: Cedar Rapids IA    
+    id: cedar_rapids_ia     
+    boundaryType: DirectSourced     
+  - name: Council Bluffs IL
+    id: council_bluffs_il
+    boundaryType: DirectSourced 
+  - name: Jacksonville IL   
+    id: jacksonville_il    
+    boundaryType: DirectSourced
+  - name: Kansas City MO    
+    id: kansas_city_mo  
+    boundaryType: DirectSourced  
+ 
+
